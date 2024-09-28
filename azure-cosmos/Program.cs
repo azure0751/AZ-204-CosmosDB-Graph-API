@@ -25,9 +25,9 @@ namespace Axio.Stuff.CosmosDbSample
 
     internal class Program
     {
-        private static string hostname = "az3204gremlingraph.gremlin.cosmosdb.azure.com";
+        private static string hostname = "az304204cosmsograph.gremlin.cosmos.azure.com";
         private static int port = 443;
-        private static string authKey = "JzKg==";
+        private static string authKey = "3g";
 
         //  private static string database = "graphdb";
         private static string collection = string.Empty;
@@ -56,7 +56,7 @@ namespace Axio.Stuff.CosmosDbSample
             try
             {
                 // Initialize Cosmos DB client
-                CosmosClient cosmosClient = new CosmosClient("https://az3204gremlingraph.documents.azure.com:443/", authKey);
+                CosmosClient cosmosClient = new CosmosClient("https://az304204cosmsograph.documents.azure.com:443/", authKey);
 
                 // Create the database if it doesn't exist
                 Database database = await cosmosClient.CreateDatabaseIfNotExistsAsync(DatabaseName);
@@ -129,8 +129,23 @@ namespace Axio.Stuff.CosmosDbSample
                     try
                     {
                         Console.Write($"Executing {i}: {query.Description}.: {query.Statement}.. ");
-                        await gremlinClient.SubmitAsync<dynamic>(query.Statement);
-                        Console.WriteLine("ok");
+                        var resultSet=  await gremlinClient.SubmitAsync<dynamic>(query.Statement);
+                        if (resultSet.Count > 0)
+                        {
+                            Console.WriteLine("\tResult:");
+                            foreach (var result in resultSet)
+                            {
+                                // The vertex results are formed as Dictionaries with a nested dictionary for their properties
+                                string output = JsonConvert.SerializeObject(result);
+                                Console.WriteLine($"\t{output}");
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine("ok");
+                        }else
+                        {
+                            Console.WriteLine("error");
+                        }
+                        
                         i = i + 1;
                     }
                     catch (ResponseException e)
